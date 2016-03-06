@@ -1,0 +1,32 @@
+---
+title: "Missing Data"
+author: "Patrick Mobley"
+date: "March 6, 2016"
+output: slidy_presentation
+---
+
+## Keep in Mind
+
+
+
+>All models are wrong, but some are useful 
+— famed statistician George Box
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Code and Output
+
+```{r}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
