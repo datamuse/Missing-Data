@@ -5,6 +5,12 @@ date: "March 6, 2016"
 output: ioslides_presentation
 ---
 
+## Keep in Mind
+
+> All models are wrong, but some are useful 
+— famed statistician George Box
+
+
 ## Why is missing data a problem? {.smaller}
 
 - Loss of power
@@ -41,6 +47,19 @@ plot(density(miris$Petal.Width, na.rm = TRUE), main = "Pedal Width (missing)")
 plot(density(miris$Petal.Width[complete.cases(miris)]), main = "Pedal Width (only complete cases)")
 ```
 
+## Goals for Missing Data Model
+
+1. Minimize bias. 
+2. Maximize the use of available information.
+3. Yield good estimates of uncertainty. 
+
+Taken from Paul Allison's chapter on missing data referenced at end of presentation. 
+
+<div class="notes">
+1. Although it is well-known that missing data can introduce bias into parameter estimates, a good method should make that bias as small as possible.
+2. We want to avoid discarding any data, and we want to use the available data to produce parameter estimates that are efficient (i.e., have minimum- sampling variability).
+3. We want accurate estimates of standard errors, confidence intervals and p-values.
+</div>
 
 ## Three types of missing data
 
@@ -49,23 +68,6 @@ plot(density(miris$Petal.Width[complete.cases(miris)]), main = "Pedal Width (onl
 - MNAR - Missing Not At Random
 
 They each have different implications. 
-
-
-
-## Methods to deal with missing data
-
-- Deletion
-  
-  Listwise
-  Pairwise
-
-- Imputation
-  
-  Mean
-  Median
-  Modeling
-
-- Interpolation
 
 ## Types of data
 Qualitiative
@@ -80,11 +82,29 @@ Numeric
 
 Depending on the type of data, we'll address the missing data differently.
 
-## Keep in Mind
+## Methods to deal with missing data
 
-> All models are wrong, but some are useful 
-— famed statistician George Box
+Deletion
 
-There are diffierent methods of handeling missing data and each has its own assumptions. The goal of any model is to describe an simplified (constrained) event.
+- Listwise
+- Pairwise
 
+Imputation
+
+- Mean
+- Median
+- Modeling
+
+Interpolation
+
+## Resources
+
+Articles:
+http://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/
+http://www.analyticsvidhya.com/blog/2016/01/guide-data-exploration/
+
+
+Chapters:
+http://www.stats.ox.ac.uk/~snijders/Graham2009.pdf
+http://www.statisticalhorizons.com/wp-content/uploads/2012/01/Milsap-Allison.pdf
 
