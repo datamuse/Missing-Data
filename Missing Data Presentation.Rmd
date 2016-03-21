@@ -1,59 +1,108 @@
 ---
 title: "Missing Data Modeled"
 author: "Patrick Mobley"
-date: "March 6, 2016"
+date: "March 23, 2016"
 output: ioslides_presentation
 ---
+<style>
+div.box {
+    background-color:lightsteelblue;
+    color:black;
+    margin:20px;
+    padding:20px;
+} 
 
-## Keep in Mind
+h2 {
+    color:slategrey;
+}
+</style>
+## About Me { .flexbox}
 
+<div class="columns-2">
+* Moved to the Twin Cities about one year ago
+* Masters in Applied Economics from UND
+* Research Data Analyst at Allina Health
+* Very new to data science
+
+<div class="box" style="font-size:70%;padding:0px;"> 
+\@github: datamused
+
+\@LinkedIn: www.linkedin.com/in/patrickdmobley
+
+</div>
+
+<img src="https://avatars3.githubusercontent.com/u/17633513?v=3&s=460" width="300px" height="300px" />
+</div>
+
+## Keep in Mind { .flexbox .vcenter}
+
+<div class="centered" style="font-size:130%;">
 > All models are wrong, but some are useful 
-— famed statistician George Box
 
+      — famed statistician George Box
 
-## Why is missing data a problem? {.smaller}
+</div>
 
-- Loss of power
-  
+## The data
+
+Iris Data Set 
+
+- Setosa 
+- Versicolour 
+- Virginica
+
+50 observations each
+
+## Why is missing data a problem? {.smaller .build}
+
+Loss of power
+
 ```{r, echo=FALSE, message=FALSE }
 rm(list=ls())                        # clear the workspace
 require(dplyr, quietly = TRUE)
 ```
-
 ```{r, echo=FALSE}
 data(iris)
 head(iris)
-miris <- as.data.frame(lapply(filter(iris, Petal.Width <= .5 ), 
+#generate biased missing data
+  iris.mis <- as.data.frame(lapply(filter(iris, Petal.Width <= .5 ), 
           function(cc) cc[ sample(c(TRUE, NA), 
           prob = c(0.80, 0.20), size = length(cc), replace = TRUE) ]))
-miris <- merge(miris, filter(iris, Petal.Width > .5), all = TRUE)
-head(miris)
+  iris.mis <- merge(iris.mis, filter(iris, Petal.Width > .5), all = TRUE)
+#generate unbiased missing data
+  #install.packages("missForest")
+  #require(missForest)
+  #iris.mis <- prodNA(iris, noNA = .1)
+head(iris.mis)
 ```
 
-+ `r round(100*sum(is.na(unlist(miris)))/length(unlist(miris)), 1)`% of the data is missing.
-
-+ However, only `r nrow(na.omit(miris))` complete rows (`r round((nrow(na.omit(miris))/150*100), 1)`%) are left.
++ `r round(100*sum(is.na(unlist(iris.mis)))/length(unlist(iris.mis)), 1)`% of the data is missing.
++ However, only `r nrow(na.omit(iris.mis))` complete rows (`r round((nrow(na.omit(iris.mis))/150*100), 1)`%) are left.
 
 Even small amounts of missing data, can result in large data loss. 
 
 ***
-
-- Bias
+Bias
 
 ```{r, echo=FALSE}
 par(mfrow = c(1,3))
 plot(density(iris$Petal.Width), main = "Pedal Width")
-plot(density(miris$Petal.Width, na.rm = TRUE), main = "Pedal Width (missing)")
-plot(density(miris$Petal.Width[complete.cases(miris)]), main = "Pedal Width (only complete cases)")
+plot(density(iris.mis$Petal.Width, na.rm = TRUE), main = "Pedal Width (missing)")
+plot(density(iris.mis$Petal.Width[complete.cases(iris.mis)]), main = "Pedal Width (only complete cases)")
+par(mfrow = c(1,1))
 ```
 
-## Goals for Missing Data Model
+## Goals for Missing Data Models
 
+<div class="box">
 1. Minimize bias. 
 2. Maximize the use of available information.
 3. Yield good estimates of uncertainty. 
+</div>
 
+<div style="font-size:70%;">
 Taken from Paul Allison's chapter on missing data referenced at end of presentation. 
+</div>
 
 <div class="notes">
 1. Although it is well-known that missing data can introduce bias into parameter estimates, a good method should make that bias as small as possible.
@@ -69,42 +118,96 @@ Taken from Paul Allison's chapter on missing data referenced at end of presentat
 
 They each have different implications. 
 
-## Types of data
-Qualitiative
-
-- Ordinal (ex: small, medium, large)
-- Categorical (ex: red, green, blue)
-
-Numeric
-
-- Continuous (ex: age)
-- Discrete (ex: number of people in a household)
+## Types of data 
 
 Depending on the type of data, we'll address the missing data differently.
 
-## Methods to deal with missing data
+>- Qualitiative 
+    - Ordinal (ex: small, medium, large)
+    - Categorical (ex: red, green, blue)
 
-Deletion
+>- Quanitative
+    - Continuous (ex: age)
+    - Discrete (ex: number of people in a household)
 
-- Listwise
-- Pairwise
+## Methods to deal with missing data 
 
-Imputation
+>- Deletion
+    - Listwise
+    - Pairwise
 
-- Mean
-- Median
-- Modeling
+>- Imputation
+    - Mean
+    - Median
+    - More complex methods
 
-Interpolation
+>- Interpolation
 
-## Resources
+## Missing Data Packages in R
+
+>- Imputation
+    - Hmisc
+    - [missForest](https://stat.ethz.ch/education/semesters/ss2013/ams/paper/missForest_1.2.pdf)
+    - [MICE](https://www.jstatsoft.org/index.php/jss/article/view/v045i03/v45i03.pdf)
+    - [Amelia](https://cran.r-project.org/web/packages/Amelia/vignettes/amelia.pdf)
+
+>- Tools and visulaization
+    - mitools
+    - [VIM](http://www.statistik.tuwien.ac.at/forschung/CS/CS-2008-1complete.pdf)
+
+## Visualizing the problem { .smaller}
+
+```{r, message=FALSE}
+#install.packages("VIM")
+require(VIM)
+aggr(iris.mis, col=c('steelblue','slategrey'),numbers=TRUE,sortVars=TRUE,
+    labels=names(iris.mis),cex.axis=.7,gap=3,ylab=c("Missing Data","Pattern"))
+```
+
+## Example in Hmisc
+
+Hmisc command `impute()` function replaces the missing value with a user defined statistical method (mean, max, median). The default uses median values. 
+
+
+
+
+## Example in missForest
+
+## Example in MICE
+
+```{r, results='hide', message=FALSE}
+#install.packages("mice")
+require(mice)
+imputed_mice <- mice(data = iris.mis, m = 5,
+                  method = "pmm", maxit=50, seed=500)
+```
+```{r, echo=FALSE}
+summary(imputed_mice)
+```
+
+
+## Questions { .flexbox .vcenter}
+
+<div class="centered" style="width:450px; height=450px">
+![](https://openclipart.org/download/69289/confusedpanda.svg)
+</div>
+
+## Resources {.smaller}
+
+This presentation:
+
+https://github.com/datamused/Missing-Data
 
 Articles:
+
 http://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/
+
 http://www.analyticsvidhya.com/blog/2016/01/guide-data-exploration/
 
 
 Chapters:
+
 http://www.stats.ox.ac.uk/~snijders/Graham2009.pdf
+
 http://www.statisticalhorizons.com/wp-content/uploads/2012/01/Milsap-Allison.pdf
 
