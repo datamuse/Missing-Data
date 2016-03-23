@@ -34,15 +34,6 @@ h2 {
 <img src="https://avatars3.githubusercontent.com/u/17633513?v=3&s=460" width="300px" height="300px" />
 </div>
 
-## Keep in Mind { .flexbox .vcenter}
-
-<div class="centered" style="font-size:130%;">
-> All models are wrong, but some are useful 
-
-      — famed statistician George Box
-
-</div>
-
 ## The data
 
 Iris Data Set 
@@ -83,12 +74,21 @@ head(iris.mis)
 
 Even small amounts of missing data, can result in large data loss. 
 
+## Visualizing the problem { .smaller}
+
+```{r, message=FALSE, warning=FALSE}
+#install.packages("VIM")
+require(VIM)
+aggr(iris.mis, col=c('steelblue','slategrey'),numbers=TRUE,sortVars=TRUE,
+    labels=names(iris.mis),cex.axis=.7,gap=3,ylab=c("Missing Data","Pattern"))
+```
+
 ***
 Bias
 
 ```{r, echo=FALSE}
 par(mfrow = c(1,3))
-plot(density(iris$Petal.Length), main = "Petal Length")
+plot(density(iris$Petal.Length), main = "Petal Length (Real)")
 plot(density(iris.mis$Petal.Length, na.rm = TRUE), main = "Petal Length (missing)")
 plot(density(iris.mis$Petal.Length[complete.cases(iris.mis)]), main = "Petal Length (only complete cases)")
 par(mfrow = c(1,1))
@@ -120,18 +120,6 @@ Taken from Paul Allison's chapter on missing data referenced at end of presentat
 
 They each have different implications. 
 
-## Types of data 
-
-Depending on the type of data, we'll address the missing data differently.
-
->- Qualitiative 
-    - Ordinal (ex: small, medium, large)
-    - Categorical (ex: red, green, blue)
-
->- Quanitative
-    - Continuous (ex: age)
-    - Discrete (ex: number of people in a household)
-
 ## Methods to deal with missing data 
 
 >- Deletion
@@ -143,7 +131,19 @@ Depending on the type of data, we'll address the missing data differently.
     - Median
     - More complex methods
 
->- Interpolation
+<div class="notes">
+Each method makes different assumptions or is optimized for a particular type of data (i.e. ordinal, categorical, continuous, descrete, timeseries, panal etc.). Choose the method that fits your data type and problem best. You will likely need to learn a few different methods to handle various types of data. 
+</div>
+
+
+## Keep in Mind { .flexbox .vcenter}
+
+<div class="centered" style="font-size:130%;">
+> All models are wrong, but some are useful 
+
+      — famed statistician George Box
+
+</div>
 
 ## Missing Data Packages in R
 
@@ -156,15 +156,6 @@ Depending on the type of data, we'll address the missing data differently.
 >- Tools and visulaization
     - mitools
     - [VIM](http://www.statistik.tuwien.ac.at/forschung/CS/CS-2008-1complete.pdf)
-
-## Visualizing the problem { .smaller}
-
-```{r, message=FALSE, warning=FALSE}
-#install.packages("VIM")
-require(VIM)
-aggr(iris.mis, col=c('steelblue','slategrey'),numbers=TRUE,sortVars=TRUE,
-    labels=names(iris.mis),cex.axis=.7,gap=3,ylab=c("Missing Data","Pattern"))
-```
 
 ## Example in Hmisc
 ```{r, message=FALSE, warning=FALSE}
@@ -190,47 +181,63 @@ iris.mis$Legend <- ifelse(is.imputed(iris.mis$imputed.Petal.Length) |
                                 "imputed", as.character(iris.mis$Legend))
 qplot(as.numeric(imputed.Petal.Length), as.numeric(imputed.Petal.Width), 
       data = iris.mis, color=Legend, xlab = "Imputed Petal.Length"
-      , ylab = "Imputed Petal.Width")
+      , ylab = "Imputed Petal.Width", main = "Mean Imputed")
 ```
 
 *** 
-`aregImpute()` function imputes using additive regression, bootstrapping, and predictive mean matching. 
+
+`aregImpute()` function creates multiple imputations using additive regression, bootstrapping, and predictive mean matching. 
 
 ```{r, results='hide'}
 imputed_aregImpute <- aregImpute(~ Sepal.Length + Sepal.Width 
                         + Petal.Length + Petal.Width + Species,
                         data = iris.mis, n.impute = 5)
 ```
-***
 
-```{r, echo=FALSE}
+5 separate imputations to yeild good estimates of uncertainty. The literature suggests 20 or more imputataions. 
+
+But for now, we want to pool those imputations to graph the results. 
+
+```{r, results='hide'}
 imputed <- as.data.frame(impute.transcan(imputed_aregImpute, 
                            imputation = 1, data = iris.mis, 
                            list.out = TRUE, pr=FALSE, check=FALSE))
+```
 
+***
 
+```{r, echo=FALSE}
 plot1 <- qplot(as.numeric(Petal.Length), as.numeric(Petal.Width),
-      data = imputed, color = Species, xlab = "Imputed Petal.Length",
-      ylab = "Imputed Petal.Width", main = "Imputed") + theme(legend.position="bottom")
+      data = imputed, color = Species, xlab = " Petal.Length",
+      ylab = "Imputed Petal.Width", main = "aregImpute Imputed") + theme(legend.position="bottom")
 plot2 <- qplot(Petal.Length, Petal.Width,
       data = iris, color = Species, main = "Real") + theme(legend.position="bottom")
 grid.arrange(plot1, plot2, nrow=1, ncol=2)
 
 ```
 
-
-## Example in missForest
-
 ## Example in MICE
+
+MICE stands for Multiple Imputation using Chained Equations
 
 ```{r, results='hide', message=FALSE, warning=FALSE}
 #install.packages("mice")
 require(mice)
-imputed_mice <- mice(data = iris.mis, m = 5,
+imputed_mice <- mice(data = iris.mis[1:5], m = 5,
                   method = "pmm", maxit=50, seed=500)
 ```
+***
 ```{r, echo=FALSE}
-summary(imputed_mice)
+completed_mice <-complete(imputed_mice, 3) #the third imputation
+
+plot1 <- qplot(as.numeric(Petal.Length), as.numeric(Petal.Width),
+      data = completed_mice, color = Species, xlab = "Imputed Petal.Length",
+      ylab = "Imputed Petal.Width", main = "MICE Imputed") +
+      theme(legend.position="bottom")
+plot2 <- qplot(Petal.Length, Petal.Width,
+      data = iris, color = Species, main = "Real") + theme(legend.position="bottom")
+grid.arrange(plot1, plot2, nrow=1, ncol=2)
+
 ```
 
 
@@ -258,4 +265,5 @@ Chapters:
 http://www.stats.ox.ac.uk/~snijders/Graham2009.pdf
 
 http://www.statisticalhorizons.com/wp-content/uploads/2012/01/Milsap-Allison.pdf
+
 
