@@ -132,7 +132,7 @@ They each have different implications.
     - More complex methods
 
 <div class="notes">
-Each method makes different assumptions or is optimized for a particular type of data (i.e. ordinal, categorical, continuous, descrete, timeseries, panal etc.). Choose the method that fits your data type and problem best. You will likely need to learn a few different methods to handle various types of data. 
+Each method makes different assumptions or is optimized for a particular type of data (i.e. ordinal, categorical, continuous, discrete, time series, panel etc.). Choose the method that fits your data type and problem best. You will likely need to learn a few different methods to handle various types of data. 
 </div>
 
 
@@ -194,7 +194,7 @@ imputed_aregImpute <- aregImpute(~ Sepal.Length + Sepal.Width
                         data = iris.mis, n.impute = 5)
 ```
 
-5 separate imputations to yeild good estimates of uncertainty. The literature suggests 20 or more imputataions. 
+5 separate imputations to yield good estimates of uncertainty. The literature suggests 20 or more imputations. 
 
 But for now, we want to pool those imputations to graph the results. 
 
@@ -240,6 +240,45 @@ grid.arrange(plot1, plot2, nrow=1, ncol=2)
 
 ```
 
+## Example in missForest
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+#install.packages("missForest")
+require(missForest)
+```
+
+missForest uses an iterative random forest approach to missing data.
+
+It accomplishes this by estimating the accuracy of these predictions and adjusts the model.
+
+It can also run as parallel process when installing the package doParallel
+
+***
+
+Imputing with missForest:
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+#install.packages("doParallel")
+require(doParallel)
+registerDoParallel()                    #registering the processor
+getDoParWorkers()                       #number of processors running
+#vignette("gettingstartedParallel")     #for more information
+imputed_forest <- missForest(iris.mis[1:5], parallelize = "forest")
+imputed_forest$OOBerror                 #calling Out Of Bag error
+iris.mis.forest <- imputed_forest$ximp
+```
+
+***
+
+```{r, echo=FALSE}
+plot1 <- qplot(as.numeric(Petal.Length), as.numeric(Petal.Width),
+      data = iris.mis.forest, color = Species, xlab = "Imputed Petal.Length",
+      ylab = "Imputed Petal.Width", main = "missForest Imputed") +
+      theme(legend.position="bottom")
+plot2 <- qplot(Petal.Length, Petal.Width,
+      data = iris, color = Species, main = "Real") + theme(legend.position="bottom")
+grid.arrange(plot1, plot2, nrow=1, ncol=2)
+```
 
 ## Questions { .flexbox .vcenter}
 
