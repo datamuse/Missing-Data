@@ -54,8 +54,7 @@ require(dplyr, quietly = TRUE)
 require(ggplot2, quietly = TRUE)
 require(gridExtra, quietly = TRUE)
 ```
-```{r, echo=FALSE}
-data(iris)
+```{r iris, echo=FALSE}
 head(iris)
 #generate biased missing data
   iris.mis <- as.data.frame(lapply(filter(iris, Petal.Length <= 3.0 ), 
