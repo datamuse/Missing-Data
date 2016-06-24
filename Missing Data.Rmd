@@ -55,7 +55,7 @@ head(iris.mis)
 
 Even small amounts of missing data, can result in large data loss. 
 
-## Visualizing the problem { .smaller}
+## Visualizing the problem
 
 ```{r, message=FALSE, warning=FALSE}
 #install.packages("VIM")
