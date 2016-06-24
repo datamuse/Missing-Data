@@ -6,35 +6,15 @@ output: html_document
 ---
 
 
-<style>
-div.box {
-    background-color:lightsteelblue;
-    color:black;
-    margin:20px;
-    padding:20px;
-} 
+## About Me 
 
-h2 {
-    color:slategrey;
-}
-</style>
-## About Me { .flexbox}
-
-<div class="columns-2">
 * Moved to the Twin Cities about one year ago
 * Masters in Applied Economics from UND
 * Research Data Analyst at Allina Health
 * Very new to data science
 
-<div class="box" style="font-size:70%;padding:0px;"> 
-\@github: datamused
-
-\@LinkedIn: www.linkedin.com/in/patrickdmobley
-
-</div>
-
-<img src="https://avatars3.githubusercontent.com/u/17633513?v=3&s=460" width="300px" height="300px" />
-</div>
+@github: datamused
+@LinkedIn: www.linkedin.com/in/patrickdmobley
 
 ## The data
 
@@ -46,7 +26,7 @@ Iris Data Set
 
 50 observations each
 
-## Why is missing data a problem? {.smaller .build}
+## Why is missing data a problem? 
 
 Loss of power
 
@@ -97,21 +77,16 @@ par(mfrow = c(1,1))
 
 ## Goals for Missing Data Models
 
-<div class="box">
 1. Minimize bias. 
 2. Maximize the use of available information.
 3. Yield good estimates of uncertainty. 
-</div>
 
-<div style="font-size:70%;">
 Taken from Paul Allison's chapter on missing data referenced at end of presentation. 
-</div>
 
-<div class="notes">
 1. Although it is well-known that missing data can introduce bias into parameter estimates, a good method should make that bias as small as possible.
 2. We want to avoid discarding any data, and we want to use the available data to produce parameter estimates that are efficient (i.e., have minimum- sampling variability).
 3. We want accurate estimates of standard errors, confidence intervals and p-values.
-</div>
+
 
 ## Three types of missing data
 
@@ -132,19 +107,15 @@ They each have different implications.
     - Median
     - More complex methods
 
-<div class="notes">
 Each method makes different assumptions or is optimized for a particular type of data (i.e. ordinal, categorical, continuous, discrete, time series, panel etc.). Choose the method that fits your data type and problem best. You will likely need to learn a few different methods to handle various types of data. 
-</div>
 
 
-## Keep in Mind { .flexbox .vcenter}
+## Keep in Mind 
 
-<div class="centered" style="font-size:130%;">
 > All models are wrong, but some are useful 
 
       — famed statistician George Box
 
-</div>
 
 ## Missing Data Packages in R
 
@@ -281,13 +252,7 @@ plot2 <- qplot(Petal.Length, Petal.Width,
 grid.arrange(plot1, plot2, nrow=1, ncol=2)
 ```
 
-## Questions { .flexbox .vcenter}
-
-<div class="centered" style="width:450px; height=450px">
-![](https://openclipart.org/download/69289/confusedpanda.svg)
-</div>
-
-## Resources {.smaller}
+## Resources 
 
 This presentation:
 
