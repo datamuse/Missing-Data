@@ -5,8 +5,8 @@ About Me
 -   Masters in Applied Economics from UND
 -   Currently a Research Data Analyst at Allina Health
 
-@github: datamused 
-@LinkedIn: www.linkedin.com/in/patrickdmobley
+-@github: [datamused](https://github.com/datamused/)
+-@LinkedIn: www.linkedin.com/in/patrickdmobley
 
 The data
 --------
