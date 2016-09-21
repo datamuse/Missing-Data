@@ -1,12 +1,12 @@
 About Me
 --------
 
--   Moved to the Twin Cities about one year ago
+-   Lifelong learner
 -   Masters in Applied Economics from UND
--   Research Data Analyst at Allina Health
--   Very new to data science
+-   Currently a Research Data Analyst at Allina Health
 
-@github: datamused @LinkedIn: www.linkedin.com/in/patrickdmobley
+@github: datamused 
+@LinkedIn: www.linkedin.com/in/patrickdmobley
 
 The data
 --------
