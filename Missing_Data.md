@@ -5,7 +5,7 @@ About Me
 -   Masters in Applied Economics from UND
 -   Currently a Research Data Analyst at Allina Health
 
-@github: [datamused](https://github.com/datamused/) <br> @LinkedIn:
+@github: [patdmob](https://github.com/patdmob/) <br> @LinkedIn:
 www.linkedin.com/in/patrickdmobley
 
 The data
@@ -239,7 +239,7 @@ Resources
 
 This presentation:
 
-<https://github.com/datamused/Missing-Data>
+<https://github.com/patdmob/Missing-Data>
 
 Articles:
 
